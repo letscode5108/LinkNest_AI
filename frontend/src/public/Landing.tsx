@@ -367,11 +367,11 @@ const scrollToSection = ({ sectionId }: ScrollToSectionProps): void => {
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                 <Link className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-white">LinkKeeper</span>
+              <span className="text-2xl font-bold text-white">LinkNest_AI</span>
             </div>
             
             <div className="text-white/60">
-              © 2025 LinkKeeper. Enterprise link management platform.
+              © 2025 LinkNest_AI. Enterprise link management platform.
             </div>
           </div>
         </div>
