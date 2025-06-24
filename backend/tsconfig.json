@@ -13,8 +13,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "sourceMap": true,
-    "ts-node": { "transpileOnly": true }
+    "sourceMap": true
+    
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
