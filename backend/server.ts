@@ -8,7 +8,7 @@ const PORT = process.env.PORT
 
 
 app.use(cors({
-  origin: "https://linknestai.vercel.app/",
+  origin: "https://linknestai.vercel.app",
   credentials: true
 }));
 
