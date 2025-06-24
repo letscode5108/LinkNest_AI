@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Landing from './public/Landing';
 import Auth from './public/Auth';
-import ProtectedRoute from './components/ProtectedRoute'; // Create this component
-import Link from './components/LIink'; // Create this component
+import ProtectedRoute from './components/ProtectedRoute'; 
+import Link from './components/LIink'; 
 
 const App: React.FC = () => {
   return (

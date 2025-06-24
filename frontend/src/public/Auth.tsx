@@ -2,7 +2,6 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { User, Lock, Mail, Eye, EyeOff,  } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-// Types
 interface User {
   id: number;
   email: string;
@@ -20,10 +19,10 @@ interface AuthContextType {
   error: string | null;
 }
 
-// API Base URL - update this to match your backend
+
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/v1/auth`;
 
-// Auth Context
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const useAuth = () => {
@@ -102,13 +101,13 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         try {
           const response = await api.getProfile();
           setUser(response.user);
-          // If user is authenticated and on auth page, redirect to link
+         
           if (window.location.pathname === '/auth') {
             navigate('/link'); 
           }
         } catch (err) {
           console.error('Profile fetch failed:', err);
-          // Try to refresh token
+          
           try {
             const refreshResponse = await api.refreshToken();
             localStorage.setItem('accessToken', refreshResponse.accessToken);
@@ -138,7 +137,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       localStorage.setItem('accessToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
       setUser(response.user);
-      navigate('/link'); // Redirect to dashboard after login
+      navigate('/link'); 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
       throw err;
@@ -155,7 +154,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       localStorage.setItem('accessToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
       setUser(response.user);
-      navigate('/link'); // Redirect to dashboard after registration
+      navigate('/link'); 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
       throw err;
@@ -168,8 +167,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     setUser(null);
-    navigate('/'); // Redirect to home after logout
-    api.logout().catch(() => {}); // Silent fail for logout API call
+    navigate('/'); 
+    api.logout().catch(() => {}); 
   };
 
   return (
@@ -438,8 +437,8 @@ const AuthContent: React.FC<{
     );
   }
 
-  // If user is authenticated, they shouldn't see the auth forms
-  // The navigation is handled in the AuthProvider
+  
+  
   if (user) {
     return null;
   }

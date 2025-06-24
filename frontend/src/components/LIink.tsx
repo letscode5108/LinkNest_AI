@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search,Plus, Trash2,ExternalLink, Calendar, Globe, Tag,  BookmarkPlus,Eye, X,ChevronLeft,ChevronRight,Loader2,LogOut,} from 'lucide-react';
 
-// Type definitions
+
 interface User { id: string; name: string; email: string; }
 interface Link { id: string; url: string; title: string; description?: string; domain: string; image?: string; tags?: string[]; createdAt: string; summary?: string; }
 interface Pagination { currentPage: number; totalPages: number; hasNextPage: boolean; hasPrevPage: boolean; totalLinks: number; }
 interface ApiResponse { links: Link[]; pagination: Pagination; }
 interface LinkDetailsResponse { link: Link; }
 
-// Custom color palette based on your provided colors
+
 const colors = {
   federal_blue: '#03045e',
   marian_blue: '#023e8a', 
@@ -21,10 +21,10 @@ const colors = {
   light_cyan: '#caf0f8'
 };
 
-// API base URL - adjust this to match your backend
+
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/v1/links`;
 
-// API functions using actual endpoints
+
 const api = {
   saveLink: async (url: string): Promise<Link> => {
     const response = await fetch(API_BASE_URL, {
@@ -110,7 +110,7 @@ const api = {
 const LinkCard: React.FC<{ link: Link; onDelete: (id: string) => void; onView: (link: Link) => void; }> = ({ link, onDelete, onView }) => (
   <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer"
        onClick={() => onView(link)}>
-    {/* Image Section - 50% of card height */}
+    
     <div className="relative h-48 bg-gray-100">
       {link.image ? (
         <img 
@@ -124,7 +124,7 @@ const LinkCard: React.FC<{ link: Link; onDelete: (id: string) => void; onView: (
         </div>
       )}
       
-      {/* Overlay with action buttons */}
+    
       <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={(e) => {
@@ -148,7 +148,7 @@ const LinkCard: React.FC<{ link: Link; onDelete: (id: string) => void; onView: (
         </button>
       </div>
 
-      {/* Domain badge */}
+     
       <div className="absolute bottom-3 left-3">
         <span className="px-3 py-1 bg-black/70 backdrop-blur-sm text-white text-xs font-medium rounded-full">
           {link.domain}
@@ -156,7 +156,7 @@ const LinkCard: React.FC<{ link: Link; onDelete: (id: string) => void; onView: (
       </div>
     </div>
 
-    {/* Content Section - 50% of card height */}
+
     <div className="p-6 h-48 flex flex-col">
       <div className="flex-1">
         <h3 className="font-bold text-gray-900 text-lg leading-tight mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
@@ -166,8 +166,8 @@ const LinkCard: React.FC<{ link: Link; onDelete: (id: string) => void; onView: (
           {link.description || 'No description available'}
         </p>
       </div>
-      
-      {/* Tags section */}
+    
+    
       {link.tags && link.tags.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-3">
           {link.tags.slice(0, 3).map((tag, index) => (
@@ -190,7 +190,7 @@ const LinkCard: React.FC<{ link: Link; onDelete: (id: string) => void; onView: (
         </div>
       )}
 
-      {/* Footer */}
+     
       <div className="flex items-center justify-between mt-auto">
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <Calendar size={12} />
@@ -370,10 +370,10 @@ const LinkDetailsModal: React.FC<{ link: Link | null; isOpen: boolean; onClose: 
             </div>
           ) : details ? (
             <div className="space-y-8">
-              {/* Header Card */}
+          
               <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6">
                 <div className="flex flex-col md:flex-row gap-6">
-                  {/* Image */}
+                  
                   <div className="flex-shrink-0">
                     {details.image ? (
                       <img 
@@ -387,8 +387,8 @@ const LinkDetailsModal: React.FC<{ link: Link | null; isOpen: boolean; onClose: 
                       </div>
                     )}
                   </div>
-                  
-                  {/* Content */}
+                 
+                 
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-2xl text-gray-900 mb-3 leading-tight">
                       {details.title}
@@ -429,7 +429,7 @@ const LinkDetailsModal: React.FC<{ link: Link | null; isOpen: boolean; onClose: 
                 </div>
               </div>
 
-              {/* Tags Section */}
+           
               {details.tags && details.tags.length > 0 && (
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
                   <div className="flex items-center gap-2 mb-4">
@@ -454,7 +454,7 @@ const LinkDetailsModal: React.FC<{ link: Link | null; isOpen: boolean; onClose: 
                 </div>
               )}
 
-              {/* AI Summary Section */}
+           
               {details.summary && (
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
                   <h4 className="font-semibold text-lg text-gray-900 mb-4 flex items-center gap-2">
@@ -469,7 +469,7 @@ const LinkDetailsModal: React.FC<{ link: Link | null; isOpen: boolean; onClose: 
                 </div>
               )}
 
-              {/* Action Buttons */}
+           
               <div className="flex gap-4 pt-4 border-t border-gray-200">
                 <a
                   href={details.url}
@@ -540,7 +540,7 @@ const Llink: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState('');
 
-  // Available tags from your backend
+  
   const TAG_CATEGORIES = [
     'Image',
     'Video', 
@@ -720,14 +720,14 @@ const Llink: React.FC = () => {
           </div>
         </div>
 
-        {/* Error Message */}
+    
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-8">
             <p className="font-medium">Error: {error}</p>
           </div>
         )}
 
-        {/* Loading State */}
+        
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
@@ -737,7 +737,7 @@ const Llink: React.FC = () => {
           </div>
         ) : (
           <>
-            {/* Links Grid */}
+            {/*  Grid */}
             {links.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
                 {links.map(link => (

@@ -6,7 +6,7 @@ import { Sign } from 'crypto';
 
 const prisma = new PrismaClient();
 
-// Environment variables
+
 const JWT_SECRET = process.env.JWT_ACCESS_SECRET || 'your-secret-key';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
@@ -16,7 +16,7 @@ interface AuthRequest extends Request {
   user?: any;
 }
 
-// Generate JWT tokens
+
 const generateTokens = (userId: number) => {
   const payload = { userId };
   const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as any);
@@ -24,12 +24,12 @@ const generateTokens = (userId: number) => {
   return { accessToken, refreshToken };
 };
 
-// Create account (register)
+
 export const createAccount = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, name, password } = req.body;
 
-    // Validation
+    
     if (!email || !password) {
       res.status(400).json({ error: 'Email and password are required' });
       return;
@@ -40,7 +40,7 @@ export const createAccount = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    // Check if user already exists
+   
     const existingUser = await prisma.user.findUnique({
       where: { email }
     });
@@ -50,11 +50,11 @@ export const createAccount = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    // Hash password
+ 
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Create user
+   
     const user = await prisma.user.create({
       data: {
         email,
@@ -63,7 +63,7 @@ export const createAccount = async (req: Request, res: Response): Promise<void> 
       }
     });
 
-    // Generate tokens
+   
     const { accessToken, refreshToken } = generateTokens(user.id);
 
     res.status(201).json({
@@ -84,18 +84,17 @@ export const createAccount = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-// Login user
+
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
-    // Validation
+    
     if (!email || !password) {
       res.status(400).json({ error: 'Email and password are required' });
       return;
     }
 
-    // Find user
     const user = await prisma.user.findUnique({
       where: { email }
     });
@@ -105,14 +104,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Check password
+   
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
 
-    // Generate tokens
+    
     const { accessToken, refreshToken } = generateTokens(user.id);
 
     res.json({
@@ -133,11 +132,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// Logout user
 export const logout = async (req: Request, res: Response): Promise<void> => {
   try {
-    // In a production app, you might want to blacklist the token
-    // For now, we'll just send a success response
+   
+   
     res.json({ message: 'Logout successful' });
   } catch (error) {
     console.error('Logout error:', error);
@@ -145,7 +143,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// Refresh token
+
 export const refreshToken = async (req: Request, res: Response): Promise<void> => {
   try {
     let { refreshToken } = req.body;
@@ -160,10 +158,10 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // Verify refresh token
+   
     const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as { userId: number };
     
-    // Check if user still exists
+   
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId }
     });
@@ -173,7 +171,7 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // Generate new tokens
+    
     const tokens = generateTokens(user.id);
 
     res.json({
@@ -186,7 +184,7 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-// Get user profile
+
 export const getProfile = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const user = req.user;

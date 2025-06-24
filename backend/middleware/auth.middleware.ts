@@ -32,11 +32,11 @@ export const authenticateToken = async (req: AuthRequest, res: Response, next: N
       return;
     }
 
-    // Attach user to request
+    
     req.user = user;
     next();
   } catch (error) {
-    // Only log non-JWT errors or in development
+    
     if (process.env.NODE_ENV === 'development') {
       console.log('Authentication failed:', error instanceof jwt.JsonWebTokenError ? 'Invalid token' : error);
     }

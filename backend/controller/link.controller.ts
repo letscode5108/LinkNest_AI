@@ -6,7 +6,6 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const prisma = new PrismaClient();
 
-// Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
@@ -14,7 +13,7 @@ interface AuthRequest extends Request {
   user?: any;
 }
 
-// Predefined tag categories
+
 const TAG_CATEGORIES = [
   'Image',
   'Video', 
@@ -24,7 +23,6 @@ const TAG_CATEGORIES = [
   'Social Media Post'
 ];
 
-// Extract metadata from URL
 const extractMetadata = async (url: string) => {
   try {
     const response = await axios.get(url, {
@@ -36,27 +34,27 @@ const extractMetadata = async (url: string) => {
 
     const $ = cheerio.load(response.data);
     
-    // Extract title
+   
     const title = $('meta[property="og:title"]').attr('content') || 
                   $('title').text() || 
                   $('h1').first().text() || 
                   'Untitled';
 
-    // Extract description
+    
     const description = $('meta[property="og:description"]').attr('content') || 
                        $('meta[name="description"]').attr('content') || 
                        '';
 
-    // Extract Open Graph image
+
     const image = $('meta[property="og:image"]').attr('content') || 
                   $('meta[name="twitter:image"]').attr('content') || 
                   '';
 
-    // Extract domain
+  
     const urlObj = new URL(url);
     const domain = urlObj.hostname.replace('www.', '');
 
-    // Get page content for AI analysis
+    
     const pageText = $('body').text().replace(/\s+/g, ' ').trim().substring(0, 3000);
 
     return {
@@ -79,10 +77,9 @@ const extractMetadata = async (url: string) => {
   }
 };
 
-// Generate AI tags and summary
 const generateAIContent = async (title: string, description: string, pageText: string, url: string) => {
   try {
-    // Generate tags
+   
     const tagPrompt = `
       Based on the following content, return ONLY the most relevant tags from this EXACT list:: ${TAG_CATEGORIES.join(', ')}.
       
@@ -105,7 +102,7 @@ const generateAIContent = async (title: string, description: string, pageText: s
   cat.toLowerCase() === tag.toLowerCase()
 ));
 
-    // Generate summary
+  
     const summaryPrompt = `
       Create a concise 2-3 sentence summary of the following web page content:
       
@@ -133,7 +130,7 @@ const generateAIContent = async (title: string, description: string, pageText: s
   }
 };
 
-// Save a new link
+
 export const saveLink = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { url } = req.body;
@@ -149,7 +146,7 @@ export const saveLink = async (req: AuthRequest, res: Response): Promise<void> =
       return;
     }
 
-    // Validate URL format
+   
     try {
       new URL(url);
     } catch (error) {
@@ -157,7 +154,7 @@ export const saveLink = async (req: AuthRequest, res: Response): Promise<void> =
       return;
     }
 
-    // Check if link already exists for this user
+    
     const existingLink = await prisma.link.findFirst({
       where: {
         url,
@@ -170,10 +167,10 @@ export const saveLink = async (req: AuthRequest, res: Response): Promise<void> =
       return;
     }
 
-    // Extract metadata
+ 
     const metadata = await extractMetadata(url);
 
-    // Generate AI content
+    
     const aiContent = await generateAIContent(
       metadata.title,
       metadata.description,
@@ -181,7 +178,7 @@ export const saveLink = async (req: AuthRequest, res: Response): Promise<void> =
       url
     );
 
-    // Save link to database
+    
     const link = await prisma.link.create({
       data: {
         url,
@@ -214,7 +211,7 @@ export const saveLink = async (req: AuthRequest, res: Response): Promise<void> =
   }
 };
 
-// Get all links for authenticated user
+
 export const getLinks = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id;
@@ -227,12 +224,12 @@ export const getLinks = async (req: AuthRequest, res: Response): Promise<void> =
       return;
     }
 
-    // Get total count
+    
     const totalLinks = await prisma.link.count({
       where: { userId }
     });
 
-    // Get links with pagination, ordered by creation date (newest first)
+   
     const links = await prisma.link.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
@@ -269,7 +266,7 @@ export const getLinks = async (req: AuthRequest, res: Response): Promise<void> =
   }
 };
 
-// Get link details by ID with AI-generated summary
+
 export const getLinkDetails = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -286,7 +283,7 @@ export const getLinkDetails = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    // Find the link
+    
     const link = await prisma.link.findFirst({
       where: {
         id: linkId,
@@ -299,10 +296,10 @@ export const getLinkDetails = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    // Generate fresh AI summary for the detailed view
+    
     let aiSummary = 'Summary unavailable';
     try {
-      // Re-extract page content for fresh summary
+      
       const metadata = await extractMetadata(link.url);
       const aiContent = await generateAIContent(
         link.title || '',
@@ -335,7 +332,7 @@ export const getLinkDetails = async (req: AuthRequest, res: Response): Promise<v
   }
 };
 
-// Delete a link
+
 export const deleteLink = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -352,7 +349,7 @@ export const deleteLink = async (req: AuthRequest, res: Response): Promise<void>
       return;
     }
 
-    // Check if link exists and belongs to user
+   
     const link = await prisma.link.findFirst({
       where: {
         id: linkId,
@@ -365,7 +362,7 @@ export const deleteLink = async (req: AuthRequest, res: Response): Promise<void>
       return;
     }
 
-    // Delete the link
+   
     await prisma.link.delete({
       where: { id: linkId }
     });
@@ -377,7 +374,7 @@ export const deleteLink = async (req: AuthRequest, res: Response): Promise<void>
   }
 };
 
-// Search links
+
 export const searchLinks = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id;
@@ -394,7 +391,7 @@ export const searchLinks = async (req: AuthRequest, res: Response): Promise<void
     const searchQuery = q as string;
     const tagFilter = tags as string;
 
-    // Build where clause
+    
     const whereClause: any = { userId };
 
     if (searchQuery) {
@@ -412,10 +409,9 @@ export const searchLinks = async (req: AuthRequest, res: Response): Promise<void
       };
     }
 
-    // Get total count
+
     const totalLinks = await prisma.link.count({ where: whereClause });
 
-    // Get links
     const links = await prisma.link.findMany({
       where: whereClause,
       orderBy: { createdAt: 'desc' },

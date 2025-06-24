@@ -24,7 +24,7 @@ const scrollToSection = ({ sectionId }: ScrollToSectionProps): void => {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #001219 0%, #005f73 50%, #0a9396 100%)' }}>
-      {/* Navigation */}
+     
       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'backdrop-blur-md bg-black/20 shadow-lg' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -37,7 +37,7 @@ const scrollToSection = ({ sectionId }: ScrollToSectionProps): void => {
             
             <div className="hidden md:flex items-center space-x-8">
               {['Home', 'Features', 'How It Works', 'Pricing'].map((item) => {
-                // Fix: Replace ALL spaces with hyphens, not just the first one
+                
                 const sectionId = item.toLowerCase().replace(/\s+/g, '-');
                 return (
                   <button
